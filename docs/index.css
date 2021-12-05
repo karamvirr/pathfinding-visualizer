@@ -1,0 +1,43 @@
+#container {
+  margin: 0 auto;
+  margin-top: 25px;
+}
+
+#container, #canvas {
+  height: 600px;
+  width: 800px;
+}
+
+.start {
+  fill: green;
+}
+
+.end {
+  fill: red;
+}
+
+.wall {
+  fill: #a9a9a9;
+}
+
+.high-cost-tile {
+  fill: lightblue;
+}
+
+.wall, .high-cost-tile {
+  transition: fill 0.5s ease;
+}
+
+.visited {
+  fill: lightcyan;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.pending-traversal {
+  fill: lightgreen;
+}
