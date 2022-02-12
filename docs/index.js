@@ -469,6 +469,13 @@
   }
 
   /**
+   * @returns true if animation is currently in progress, false otherwise.
+   */
+  function isAnimating() {
+    return $("visualize").classList.contains("disabled");
+  }
+
+  /**
    * Initializes the board by inserting a grid of blank tiles.
    */
   function setBoard() {
@@ -545,7 +552,7 @@
 
     svgRect.onmousedown = function(event) {
       let selectedTile = getTileFromRect(event.target);
-      if (selectedTile) {
+      if (selectedTile && !isAnimating()) {
         userInteractionHandler.isInteracting = true;
         if (selectedTile == start || selectedTile == end) {
           userInteractionHandler.isMovingNode = true;
