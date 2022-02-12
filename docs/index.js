@@ -346,11 +346,11 @@
    * @returns    computed heuristic value from tile to the destination node.
    */
   function manhattanDistance(tile) {
-    let x1 = tile.col * SIZE;
-    let y1 = tile.row * SIZE;
+    let x1 = tile.col;
+    let y1 = tile.row;
 
-    let x2 = end.col * SIZE;
-    let y2 = end.row * SIZE;
+    let x2 = end.col;
+    let y2 = end.row;
 
     return Math.abs(x2 - x1) + Math.abs(y2 - y1);
   }
@@ -365,11 +365,11 @@
    * @returns    computed heuristic value from tile to the destination node.
    */
   function euclideanDistance(tile) {
-    let x1 = tile.col * SIZE;
-    let y1 = tile.row * SIZE;
+    let x1 = tile.col;
+    let y1 = tile.row;
 
-    let x2 = end.col * SIZE;
-    let y2 = end.row * SIZE;
+    let x2 = end.col;
+    let y2 = end.row;
 
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   }
@@ -384,11 +384,11 @@
    * @returns    computed heuristic value from tile to the destination node.
    */
   function chebyshevDistance(tile) {
-    let x1 = tile.col * SIZE;
-    let y1 = tile.row * SIZE;
+    let x1 = tile.col;
+    let y1 = tile.row;
 
-    let x2 = end.col * SIZE;
-    let y2 = end.row * SIZE;
+    let x2 = end.col;
+    let y2 = end.row;
 
     return Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1));
   }
@@ -401,11 +401,11 @@
    * @returns    computed heuristic value from tile to the destination node.
    */
   function octileDistance(tile) {
-    let x1 = tile.col * SIZE;
-    let y1 = tile.row * SIZE;
+    let x1 = tile.col;
+    let y1 = tile.row;
 
-    let x2 = end.col * SIZE;
-    let y2 = end.row * SIZE;
+    let x2 = end.col;
+    let y2 = end.row;
 
     return Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) +
            Math.sqrt(2) * Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
