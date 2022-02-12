@@ -9,35 +9,35 @@
 }
 
 .start {
-  fill: green;
+  fill: #1C8404;
 }
 
 .end {
-  fill: red;
+  fill: #F80704;
 }
 
 .wall {
-  fill: #a9a9a9;
+  fill: #A9A9A9;
 }
 
 .high-cost-tile {
-  fill: lightblue;
+  fill: #041DFCAB;
+}
+
+.pending-traversal {
+  fill: #98FB98;
+}
+
+.visited {
+  fill: #AFEEEE;
 }
 
 .wall, .high-cost-tile {
   transition: fill 0.5s ease;
 }
 
-.visited {
-  fill: lightcyan;
-}
-
 @keyframes dash {
   to {
     stroke-dashoffset: 0;
   }
-}
-
-.pending-traversal {
-  fill: lightgreen;
 }
