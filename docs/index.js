@@ -2,6 +2,8 @@
 (function() {
   // variable for the svg namespace
   const SVG_NS = "http://www.w3.org/2000/svg";
+  // link to repo on github
+  const GITHUB_PROJECT_LINK = "https://github.com/rai96/pathfinding-visualizer";
   // default tile size
   const SIZE = 25;
   // the default cost of moving from one tile to an adjacent one
@@ -33,9 +35,13 @@
     userInteractionHandler.isErasingTiles = false;
 
     setBoard();
-    setNode(0, 0, true);
-    setNode(15, 15, false);
+    setNode(grid.length / 2, 5, true);
+    setNode(grid.length / 2, 26, false);
 
+    $("title").onclick = function() {
+      window.location.assign(GITHUB_PROJECT_LINK);
+
+    }
     $("algorithms-menu").onclick = function(event) {
       let text = "Visualize ";
       let disableHeuristicsDropdown = true;
@@ -118,53 +124,15 @@
   }
 
   /**
+   * Executes an A* search from the starting node.
+   * If the provided parameter is true, then the search will be animated.
+   * Otherwise, no animation occurs and the path connecting the starting and
+   * destination node will be displayed instantly (if one exists) alongside
+   * the colored visited tiles & tiles pending traversal.
+   * To learn more about A* Search:
+   * https://en.wikipedia.org/wiki/A*_search_algorithm
    *
-   */
-  function toggleMenuItems() {
-    document.querySelectorAll(".nav-link, .btn").forEach(element => {
-      element.classList.toggle("disabled");
-    });
-    if (document.querySelector(".nav-link").classList.contains("disabled")) {
-      $("heuristics-dropdown").classList.add("disabled");
-    } else {
-      if (pathfindingAlgorithm == aStarSearch) {
-        $("heuristics-dropdown").classList.remove("disabled");
-      } else {
-        $("heuristics-dropdown").classList.add("disabled");
-      }
-    }
-  }
-
-  /**
-   *
-   */
-  function clearPath() {
-    if ($("canvas").querySelector("#path")) {
-      $("canvas").removeChild($("path"));
-    }
-    for (let tile of grid.flat()) {
-      tile.rect.classList.remove("visited");
-      tile.rect.classList.remove("pending-traversal");
-      tile.isVisited = false;
-      tile.distance = Infinity;
-      tile.parent = null;
-    }
-  }
-
-  /**
-   *
-   * @param {*} tile
-   * @returns
-   */
-   function isEmptyTile(tile) {
-    let cl = tile.rect.classList;
-    let offset = (cl.contains("visited") ? 1 : 0) +
-                 (cl.contains("pending-traversal") ? 1 : 0)
-    return (cl.length - offset) == 0;
-  }
-
-  /**
-   *
+   * @param animate boolean used to determine if search should be animated.
    */
   async function aStarSearch(animate = true) {
     let pathFound = false;
@@ -217,7 +185,15 @@
   }
 
   /**
+   * Executes a search from the starting node using Dijkstra's algorithm.
+   * If the provided parameter is true, then the search will be animated.
+   * Otherwise, no animation occurs and the path connecting the starting and
+   * destination node will be displayed instantly (if one exists) alongside
+   * the colored visited tiles & tiles pending traversal.
+   * To learn more about Dijkstra's algorithm:
+   * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
    *
+   * @param animate boolean used to determine if search should be animated.
    */
   async function dijkstrasAlgorithm(animate = true) {
     let pathFound = false;
@@ -270,7 +246,15 @@
   }
 
   /**
+   * Executes a Breadth First Search (BFS) from the starting node.
+   * If the provided parameter is true, then the search will be animated.
+   * Otherwise, no animation occurs and the path connecting the starting and
+   * destination node will be displayed instantly (if one exists) alongside
+   * the colored visited tiles & tiles pending traversal.
+   * To learn more about BFS:
+   * https://en.wikipedia.org/wiki/Breadth-first_search
    *
+   * @param animate boolean used to determine if search should be animated.
    */
   async function breadthFirstSearch(animate = true) {
     let pathFound = false;
@@ -310,7 +294,15 @@
   }
 
   /**
+   * Executes a Depth First Search (DFS) from the starting node.
+   * If the provided parameter is true, then the search will be animated.
+   * Otherwise, no animation occurs and the path connecting the starting and
+   * destination node will be displayed instantly (if one exists) alongside
+   * the colored visited tiles & tiles pending traversal.
+   * To learn more about DFS:
+   * https://en.wikipedia.org/wiki/Depth-first_search
    *
+   * @param animate boolean used to determine if search should be animated.
    */
   async function depthFirstSearch(animate = true) {
     let pathFound = false;
@@ -344,9 +336,14 @@
   }
 
   /**
+   * Calculates and returns the manhattan distance from the given tile
+   * to the destination node.
+   * It is computed by calculating the total number of spaces moved
+   * vertically and horizontally from the given tile to reach the
+   * destination node.
    *
-   * @param {*} tile
-   * @returns
+   * @param tile used for heuristic calculation.
+   * @returns    computed heuristic value from tile to the destination node.
    */
   function manhattanDistance(tile) {
     let x1 = tile.col * SIZE;
@@ -359,9 +356,13 @@
   }
 
   /**
+   * Calculates and returns the euclidean distance from the given tile
+   * to the destination node.
+   * It is computed by calculating the pythagorean distance from the
+   * given tile to the destination node.
    *
-   * @param {*} tile
-   * @returns
+   * @param tile used for heuristic calculation.
+   * @returns    computed heuristic value from tile to the destination node.
    */
   function euclideanDistance(tile) {
     let x1 = tile.col * SIZE;
@@ -373,10 +374,14 @@
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   }
 
-   /**
+  /**
+   * Calculates and returns the chebyshev distance from the given tile
+   * to the destination node.
+   * It is computed by calculating the maximum of the vertical and horizontal
+   * distances from the given tile to the destination node.
    *
-   * @param {*} tile
-   * @returns
+   * @param tile used for heuristic calculation.
+   * @returns    computed heuristic value from tile to the destination node.
    */
   function chebyshevDistance(tile) {
     let x1 = tile.col * SIZE;
@@ -389,11 +394,13 @@
   }
 
   /**
+   * Calculates and returns the octile distance from the given tile
+   * to the destination node.
    *
-   * @param {*} tile
-   * @returns
+   * @param tile used for heuristic calculation.
+   * @returns    computed heuristic value from tile to the destination node.
    */
-   function octileDistance(tile) {
+  function octileDistance(tile) {
     let x1 = tile.col * SIZE;
     let y1 = tile.row * SIZE;
 
@@ -402,7 +409,64 @@
 
     return Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) +
            Math.sqrt(2) * Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
-   }
+  }
+
+  /**
+   * Changes the state of all drop-down menus and buttons on the navbar from
+   * enabled to disabled, or from disabled to enabled.
+   * Note that if the heuristic drop-down is disabled, it will switch to enabled
+   * iff the algorithm selected is A*.
+   */
+  function toggleMenuItems() {
+    document.querySelectorAll(".nav-link, .btn").forEach(element => {
+      element.classList.toggle("disabled");
+    });
+    if (document.querySelector(".nav-link").classList.contains("disabled")) {
+      $("heuristics-dropdown").classList.add("disabled");
+    } else {
+      if (pathfindingAlgorithm == aStarSearch) {
+        $("heuristics-dropdown").classList.remove("disabled");
+      } else {
+        $("heuristics-dropdown").classList.add("disabled");
+      }
+    }
+  }
+
+  /**
+   * Removes path shown on the board. If there is no path present, no visual
+   * changes occur.
+   * A path consists of tiles colored during animation to mark visited tiles
+   * and tiles pending traversal (frontier), and line segments that connect the
+   * starting & destination nodes if a route exists.
+   */
+  function clearPath() {
+    if ($("canvas").querySelector("#path")) {
+      $("canvas").removeChild($("path"));
+    }
+    for (let tile of grid.flat()) {
+      tile.rect.classList.remove("visited");
+      tile.rect.classList.remove("pending-traversal");
+      tile.isVisited = false;
+      tile.distance = Infinity;
+      tile.parent = null;
+    }
+  }
+
+  /**
+   * Given a tile, determine if it is an empty tile. If it is returns true,
+   * false otherwise.
+   * A tile is considered empty if it is neither a starting/destination node, nor
+   * a wall or high-cost tile.
+   *
+   * @param tile to be determined as empty or non-empty.
+   * @returns true if the given tiel is empty, false otherwise.
+   */
+   function isEmptyTile(tile) {
+    let cl = tile.rect.classList;
+    let offset = (cl.contains("visited") ? 1 : 0) +
+                 (cl.contains("pending-traversal") ? 1 : 0)
+    return (cl.length - offset) == 0;
+  }
 
   /**
    * Initializes the board by inserting a grid of blank tiles.
@@ -614,7 +678,12 @@
   }
 
   /**
+   * Draws a path from the starting node to the destination node, assuming
+   * one exists. This path consists of connecting line segments.
+   * The given parameter dictates whether or not the path should be animated.
    *
+   * @param animate boolean used to determine if the path should be
+   *                animated from start to destination.
    */
   async function drawPath(animate) {
     let steps = [end];
@@ -648,10 +717,11 @@
   }
 
   /**
+   * Pauses code execution for a fixed amount of time determined by the
+   * provided parameter.
    *
-   *
-   * @param {*} ms
-   * @returns
+   * @param ms sleep time in milliseconds.
+   * @returns  new Promise object to aid in asynchronous sleep operation.
    */
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
