@@ -3,7 +3,7 @@
   // variable for the svg namespace
   const SVG_NS = "http://www.w3.org/2000/svg";
   // link to repo on github
-  const GITHUB_PROJECT_LINK = "https://github.com/rai96/pathfinding-visualizer";
+  const GITHUB_PROJECT_LINK = "https://github.com/karamvirr/pathfinding-visualizer";
   // default tile size
   const SIZE = 25;
   // the default cost of moving from one tile to an adjacent one
