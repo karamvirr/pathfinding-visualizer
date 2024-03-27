@@ -1,6 +1,6 @@
 # Pathfinding Algorithm Visualizer
 
-https://github.com/karamvirr/pathfinding-visualizer/assets/21179214/f46f0ec2-0b6f-4775-b09e-19f4ce0209d6
+https://github.com/karamvirr/pathfinding-visualizer/assets/21179214/c18108b7-5555-4cc2-8332-0625af06bfdc
 
 There are many applications of pathfinding algorithms in today's world. Whether it's for routing internet traffic, GPS navigation, artificial intelligence, robotics, or computer games. I built this tool because I wanted to see how these algorithms behave. Implementing them in code is one thing, but actually seeing these algorithms in action really helps to show the differences between them. You can access the live version of this project by clicking [here!](https://karamvirr.github.io/pathfinding-visualizer)
 
