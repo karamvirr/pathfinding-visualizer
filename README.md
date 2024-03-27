@@ -1,5 +1,7 @@
 # Pathfinding Algorithm Visualizer
 
+https://github.com/karamvirr/pathfinding-visualizer/assets/21179214/f46f0ec2-0b6f-4775-b09e-19f4ce0209d6
+
 There are many applications of pathfinding algorithms in today's world. Whether it's for routing internet traffic, GPS navigation, artificial intelligence, robotics, or computer games. I built this tool because I wanted to see how these algorithms behave. Implementing them in code is one thing, but actually seeing these algorithms in action really helps to show the differences between them. You can access the live version of this project by clicking [here!](https://karamvirr.github.io/pathfinding-visualizer)
 
 I wanted this project to be as interactive as possible. The user is able to click and drag their mouse over the board to draw walls, high-cost tiles, and to move the starting or destination locations. Also, moving the starting/destination locations after the algorithm has finished running will update the path in real time! 
