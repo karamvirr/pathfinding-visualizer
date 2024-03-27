@@ -11,7 +11,7 @@
   // the cost of moving from one tile to an adjacent high cost one
   const HIGH_TRANSITION_COST = 25;
   // speed of pathfinding animation in milliseconds
-  const ANIMATION_SPEED = 25;
+  const ANIMATION_SPEED = 10;
 
   // structure used to store the collection of tiles that represent the board
   let grid;
@@ -91,17 +91,7 @@
         clearPath();
       }
     };
-    $("clear-board").onclick = function() {
-      if (!this.classList.contains("disabled")) {
-        clearPath();
-        for (let tile of grid.flat()) {
-          tile.rect.classList.remove("wall");
-          tile.rect.classList.remove("high-cost-tile");
-          tile.cost = DEFAULT_TRANSITION_COST;
-          tile.isWall = false;
-        }
-      }
-    };
+    $("clear-board").onclick = clearBoard;
     $("visualize").onclick = async function() {
       if (!this.classList.contains("disabled")) {
         if (!pathfindingAlgorithm) {
@@ -118,10 +108,26 @@
         toggleMenuItems();
       }
     };
+    $("generate-maze").onclick = generateMaze;
     $("drawing-options-menu").onclick = function(event) {
       userInteractionHandler.buildType = event.target.text;
     };
-  }
+  };
+
+  /**
+   * Generates a maze by randomly setting tiles to be walls.
+   */
+  function generateMaze() {
+    clearBoard();
+    for (let tile of grid.flat()) {
+      if (tile != start && tile != end) {
+        if (Math.random() < 0.3) {
+          tile.rect.classList.add("wall");
+          tile.isWall = true;
+        }
+      }
+    };
+  };
 
   /**
    * Executes an A* search from the starting node.
@@ -449,6 +455,22 @@
       tile.isVisited = false;
       tile.distance = Infinity;
       tile.parent = null;
+    }
+  }
+
+  /**
+   * Clears the board of all walls, high-cost tiles, and pathfinding artifacts.
+   */
+  function clearBoard() {
+    const clearBoardButton = $("generate-maze");
+    if (!clearBoardButton.classList.contains("disabled")) {
+      clearPath();
+      for (let tile of grid.flat()) {
+        tile.rect.classList.remove("wall");
+        tile.rect.classList.remove("high-cost-tile");
+        tile.cost = DEFAULT_TRANSITION_COST;
+        tile.isWall = false;
+      }
     }
   }
 
