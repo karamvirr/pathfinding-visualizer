@@ -11,7 +11,7 @@
   // the cost of moving from one tile to an adjacent high cost one
   const HIGH_TRANSITION_COST = 25;
   // speed of pathfinding animation in milliseconds
-  const ANIMATION_SPEED = 10;
+  const ANIMATION_SPEED = 15;
 
   // structure used to store the collection of tiles that represent the board
   let grid;
@@ -25,6 +25,8 @@
   let pathfindingAlgorithm;
   // note: heuristics are only applied if the selected algorithm is a* search.
   let heuristic;
+  // flag to determine if diagonal movement is allowed.
+  let diagonalMovement = false;
 
   window.onload = function() {
     userInteractionHandler = {};
@@ -112,6 +114,9 @@
     $("drawing-options-menu").onclick = function(event) {
       userInteractionHandler.buildType = event.target.text;
     };
+    $("diagonal-movement-toggle").onchange = function() {
+      diagonalMovement = this.checked;
+    }
   };
 
   /**
@@ -436,6 +441,7 @@
         $("heuristics-dropdown").classList.add("disabled");
       }
     }
+    $("diagonal-movement-toggle").disabled = !$("diagonal-movement-toggle").disabled;
   }
 
   /**
@@ -701,6 +707,24 @@
     // LEFT
     if (col - 1 >= 0) {
       moveSet.push(grid[row][col - 1]);
+    }
+    if (diagonalMovement) {
+      // TOP-RIGHT
+      if (row - 1 >= 0 && col + 1 < grid[row].length) {
+        moveSet.push(grid[row - 1][col + 1]);
+      }
+      // BOTTOM-RIGHT
+      if (row + 1 < grid.length && col + 1 < grid[row].length) {
+        moveSet.push(grid[row + 1][col + 1]);
+      }
+      // BOTTOM-LEFT
+      if (row + 1 < grid.length && col - 1 >= 0) {
+        moveSet.push(grid[row + 1][col - 1]);
+      }
+      // TOP-LEFT
+      if (row - 1 >= 0 && col - 1 >= 0) {
+        moveSet.push(grid[row - 1][col - 1]);
+      }
     }
 
     return moveSet.filter(tile => !tile.isWall && !tile.isVisited);

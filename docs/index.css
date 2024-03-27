@@ -36,6 +36,19 @@
   transition: fill 0.5s ease;
 }
 
+.navbar .toggle-handle {
+  background-color: #fff;
+}
+
+.navbar .toggle-on {
+  background-color: #0d6efd !important;
+}
+
+.navbar .toggle-off {
+  background-color: #6c757d !important;
+  color: white !important;
+}
+
 @keyframes dash {
   to {
     stroke-dashoffset: 0;
