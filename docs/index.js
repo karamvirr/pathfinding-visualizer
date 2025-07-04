@@ -5,7 +5,7 @@
   // link to repo on github
   const GITHUB_PROJECT_LINK = "https://github.com/karamvirr/pathfinding-visualizer";
   // default tile size
-  const SIZE = 25;
+  const SIZE = 20;
   // the default cost of moving from one tile to an adjacent one
   const DEFAULT_TRANSITION_COST = 1;
   // the cost of moving from one tile to an adjacent high cost one
@@ -46,8 +46,14 @@
     userInteractionHandler.isErasingTiles = false;
 
     setBoard();
-    setNode(grid.length / 2, 5, true);
-    setNode(grid.length / 2, 26, false);
+
+    const startRow = Math.floor(grid.length / 2);
+    const endRow = Math.floor(grid.length / 2);
+    const startCol = 1;
+    const endCol = grid[0].length - 2;
+
+    setNode(startRow, startCol, true);
+    setNode(endRow, endCol, false);
 
     $("title").onclick = function() {
       window.location.assign(GITHUB_PROJECT_LINK);
@@ -123,7 +129,11 @@
         toggleMenuItems();
       }
     };
-    $("generate-maze").onclick = generateMaze;
+    $("generate-maze").onclick = async function() {
+      if (!this.classList.contains("disabled")) {
+        await generateMaze();
+      }
+    };
     $("drawing-options-menu").onclick = function(event) {
       userInteractionHandler.buildType = event.target.text;
     };
@@ -187,19 +197,108 @@
   }
 
   /**
-   * Generates a maze by randomly setting tiles to be walls.
+   * Generates a perfect maze using the standard Randomized Depth-First Search (DFS) algorithm.
+   * This algorithm guarantees a single, fully connected path between all cells of the maze,
+   * ensuring the start and end nodes are always connected.
+   * The generation process is animated.
    */
-  function generateMaze() {
+  async function generateMaze() {
     clearBoard();
-    for (let tile of grid.flat()) {
-      if (tile != start && tile != end) {
-        if (Math.random() < 0.3) {
-          tile.rect.classList.add("wall");
-          tile.isWall = true;
-        }
+    toggleMenuItems();
+
+    // fill the entire grid with walls.
+    for (const row of grid) {
+      for (const tile of row) {
+        tile.isWall = true;
+        tile.rect.classList.add("wall");
       }
-    };
-  };
+    }
+
+    const stack = [];
+    const startCell = start; 
+
+    // mark the starting cell as a passage and push it to the stack
+    startCell.isWall = false;
+    startCell.rect.classList.remove("wall");
+    stack.push(startCell);
+
+    // loop while the stack is not empty
+    while (stack.length > 0) {
+      let current = stack[stack.length - 1];
+
+      // find unvisited neighbors (walls that are 2 cells away)
+      const getNeighbors = (tile) => {
+        const neighbors = [];
+        const { row, col } = tile;
+        const directions = [[-2, 0], [2, 0], [0, 2], [0, -2]];
+        // shuffle directions for entropy 
+        directions.sort(() => Math.random() - 0.5);
+
+        for (const [dr, dc] of directions) {
+          const newRow = row + dr;
+          const newCol = col + dc;
+
+          if (newRow >= 0 && newRow < grid.length && newCol >= 0 && newCol < grid[0].length) {
+            const neighbor = grid[newRow][newCol];
+            if (neighbor.isWall) {
+              neighbors.push(neighbor);
+            }
+          }
+        }
+        return neighbors;
+      };
+
+      const neighbors = getNeighbors(current);
+
+      if (neighbors.length > 0) {
+        // if an unvisited neighbor is found:
+        const next = neighbors[0];
+
+        // carve the wall between the current cell and the neighbor
+        const wallToRemove = grid[(current.row + next.row) / 2][(current.col + next.col) / 2];
+        wallToRemove.isWall = false;
+        wallToRemove.rect.classList.remove("wall");
+
+        // mark the neighbor as a passage
+        next.isWall = false;
+        next.rect.classList.remove("wall");
+
+        // push the neighbor to the stack
+        stack.push(next);
+        await sleep(ANIMATION_SPEED);
+      } else {
+        // backtrack
+        stack.pop();
+      }
+    }
+
+    // ensure the end node is a passage
+    end.isWall = false;
+    end.rect.classList.remove("wall");
+
+    // connect the end node to the maze with an orthogonal path
+    const { row, col } = end;
+    const neighbors = [];
+    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]; // orthogonal only
+
+    for (const [dr, dc] of directions) {
+      const nRow = row + dr;
+      const nCol = col + dc;
+      if (nRow >= 0 && nRow < grid.length && nCol >= 0 && nCol < grid[0].length) {
+        neighbors.push(grid[nRow][nCol]);
+      }
+    }
+
+    const passableNeighbors = neighbors.filter(n => !n.isWall);
+    if (passableNeighbors.length === 0 && neighbors.length > 0) {
+      // if the end node is surrounded by walls, carve a path to one of them
+      const wallToCarve = neighbors[Math.floor(Math.random() * neighbors.length)];
+      wallToCarve.isWall = false;
+      wallToCarve.rect.classList.remove("wall");
+    }
+
+    toggleMenuItems();
+  }
 
   /**
    * Executes an A* search from the starting node.
@@ -260,6 +359,7 @@
       }
 
       if (animate) {
+        currentMetrics.executionTime = Math.round(performance.now() - startTime);
         updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
@@ -335,6 +435,7 @@
       }
 
       if (animate) {
+        currentMetrics.executionTime = Math.round(performance.now() - startTime);
         updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
@@ -397,6 +498,7 @@
       }
 
       if (animate) {
+        currentMetrics.executionTime = Math.round(performance.now() - startTime);
         updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
@@ -453,6 +555,7 @@
       }
 
       if (animate) {
+        currentMetrics.executionTime = Math.round(performance.now() - startTime);
         updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
@@ -592,15 +695,12 @@
    * Clears the board of all walls, high-cost tiles, and pathfinding artifacts.
    */
   function clearBoard() {
-    const clearBoardButton = $("generate-maze");
-    if (!clearBoardButton.classList.contains("disabled")) {
-      clearPath();
-      for (let tile of grid.flat()) {
-        tile.rect.classList.remove("wall");
-        tile.rect.classList.remove("high-cost-tile");
-        tile.cost = DEFAULT_TRANSITION_COST;
-        tile.isWall = false;
-      }
+    clearPath();
+    for (let tile of grid.flat()) {
+      tile.rect.classList.remove("wall");
+      tile.rect.classList.remove("high-cost-tile");
+      tile.cost = DEFAULT_TRANSITION_COST;
+      tile.isWall = false;
     }
   }
 
@@ -614,10 +714,7 @@
    * @returns true if the given tiel is empty, false otherwise.
    */
    function isEmptyTile(tile) {
-    let cl = tile.rect.classList;
-    let offset = (cl.contains("visited") ? 1 : 0) +
-                 (cl.contains("pending-traversal") ? 1 : 0)
-    return (cl.length - offset) == 0;
+    return !tile.isWall && tile.cost === DEFAULT_TRANSITION_COST && tile !== start && tile !== end;
   }
 
   /**

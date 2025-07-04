@@ -72,7 +72,19 @@
 }
 
 .visited.high-cost-tile {
-  fill: #7AC5E5;
+  fill: #84baf2;
+}
+
+.pending-traversal.high-cost-tile {
+  fill: #73c4b1;
+}
+
+.end.wall {
+  fill: #F80704;
+}
+
+.start.wall {
+  fill: #1C8404;
 }
 
 .wall, .high-cost-tile {
