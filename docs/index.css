@@ -3,6 +3,8 @@
   justify-content: center;
   margin-top: 25px;
   gap: 20px;
+  padding: 0 10px;
+  position: relative;
 }
 
 #container {
@@ -10,26 +12,129 @@
 }
 
 #container, #canvas {
-  height: 600px;
-  width: 800px;
+  height: min(60vh, 700px);
+  width: min(90vw, 1400px);
+  max-width: 1400px;
+  max-height: 700px;
+}
+
+@media (min-width: 1400px) {
+  #container, #canvas {
+    width: 1400px;
+    height: 700px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  #container, #canvas {
+    width: min(90vw, 1200px);
+    height: min(60vh, 650px);
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  #container, #canvas {
+    width: min(90vw, 1000px);
+    height: min(55vh, 600px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  #container, #canvas {
+    width: min(95vw, 800px);
+    height: min(50vh, 500px);
+  }
+}
+
+@media (max-width: 767px) {
+  #container, #canvas {
+    width: min(98vw, 600px);
+    height: min(45vh, 450px);
+  }
+
+  #main-container {
+    margin-top: 15px;
+    gap: 15px;
+  }
+
+  #metrics-panel {
+    top: 10px !important;
+    right: 10px !important;
+    left: 10px !important;
+    width: auto !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  #metrics-panel {
+    top: 15px !important;
+    right: 15px !important;
+    width: 280px !important;
+  }
 }
 
 #metrics-panel {
-  width: 280px;
-  height: fit-content;
-  display: none;
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  width: 300px !important;
+  height: fit-content !important;
+  display: none !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  z-index: 1000 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.3s ease !important;
 }
 
 #metrics-panel.show {
-  display: block;
+  display: block !important;
+}
+
+#metrics-panel .card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin-bottom: 0 !important;
+}
+
+#metrics-panel .card-header {
+  background: rgba(248, 249, 250, 0.7) !important;
+  border-bottom: 1px solid rgba(222, 226, 230, 0.3) !important;
+  border-radius: 12px 12px 0 0 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  padding: 1rem 1.25rem 0.75rem !important;
+}
+
+#metrics-panel .card-header h5 {
+  font-weight: 600 !important;
+  color: rgba(52, 58, 64, 0.9) !important;
+  margin-bottom: 0 !important;
+}
+
+#metrics-panel .card-body {
+  background: transparent !important;
+  border: none !important;
 }
 
 .metric-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #e9ecef;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(233, 236, 239, 0.4);
+  transition: background-color 0.2s ease;
+}
+
+.metric-item:hover {
+  background-color: rgba(248, 249, 250, 0.3);
+  margin: 0 -1.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  border-radius: 6px;
 }
 
 .metric-item:last-child {
@@ -38,13 +143,18 @@
 
 .metric-label {
   font-weight: 500;
-  color: #495057;
+  color: rgba(73, 80, 87, 0.9);
+  font-size: 0.9rem;
 }
 
 .metric-value {
   font-weight: 600;
   color: #007bff;
-  font-family: 'Monaco', 'Menlo', monospace;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 0.9rem;
+  background: rgba(0, 123, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .start {
