@@ -11,7 +11,7 @@
   // the cost of moving from one tile to an adjacent high cost one
   const HIGH_TRANSITION_COST = 25;
   // speed of pathfinding animation in milliseconds
-  const ANIMATION_SPEED = 15;
+  const ANIMATION_SPEED = 10;
 
   // structure used to store the collection of tiles that represent the board
   let grid;
@@ -100,8 +100,8 @@
         case "Chebyshev":
           heuristic = chebyshevDistance;
           break;
-        case "Octile":
-          heuristic = octileDistance;
+        case "Random":
+          heuristic = randomDistance;
       }
       $("visualize").innerHTML = '<i class="fas fa-play mr-1"></i>Visualize A*';
       $("current-heuristic").innerText = event.target.text;
@@ -215,7 +215,7 @@
     }
 
     const stack = [];
-    const startCell = start; 
+    const startCell = start;
 
     // mark the starting cell as a passage and push it to the stack
     startCell.isWall = false;
@@ -231,7 +231,7 @@
         const neighbors = [];
         const { row, col } = tile;
         const directions = [[-2, 0], [2, 0], [0, 2], [0, -2]];
-        // shuffle directions for entropy 
+        // shuffle directions for entropy
         directions.sort(() => Math.random() - 0.5);
 
         for (const [dr, dc] of directions) {
@@ -631,21 +631,14 @@
   }
 
   /**
-   * Calculates and returns the octile distance from the given tile
-   * to the destination node.
+   * Returns a random heuristic value, demonstrating how A* behaves
+   * with unreliable guidance. This essentially makes A* search randomly.
    *
-   * @param tile used for heuristic calculation.
-   * @returns    computed heuristic value from tile to the destination node.
+   * @param tile used for heuristic calculation (ignored).
+   * @returns    random heuristic value between 0 and 100.
    */
-  function octileDistance(tile) {
-    let x1 = tile.col;
-    let y1 = tile.row;
-
-    let x2 = end.col;
-    let y2 = end.row;
-
-    return Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) +
-           Math.sqrt(2) * Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
+  function randomDistance(tile) {
+    return Math.random() * 100;
   }
 
   /**
