@@ -1,11 +1,50 @@
-#container {
-  margin: 0 auto;
+#main-container {
+  display: flex;
+  justify-content: center;
   margin-top: 25px;
+  gap: 20px;
+}
+
+#container {
+  flex-shrink: 0;
 }
 
 #container, #canvas {
   height: 600px;
   width: 800px;
+}
+
+#metrics-panel {
+  width: 280px;
+  height: fit-content;
+  display: none;
+}
+
+#metrics-panel.show {
+  display: block;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.metric-item:last-child {
+  border-bottom: none;
+}
+
+.metric-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.metric-value {
+  font-weight: 600;
+  color: #007bff;
+  font-family: 'Monaco', 'Menlo', monospace;
 }
 
 .start {

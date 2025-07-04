@@ -68,12 +68,47 @@
             <label for="diagonal-movement-toggle" class="mr-2 mb-0">Diagonal Movement:</label>
             <input id="diagonal-movement-toggle" type="checkbox" data-toggle="toggle" data-on="Enabled" data-off="Disabled">
           </div>
+          <div id="metrics-toggle" class="nav-item ml-2 d-flex align-items-center">
+            <label for="metrics-toggle-switch" class="mr-2 mb-0">Metrics:</label>
+            <input id="metrics-toggle-switch" type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide">
+          </div>
         </ul>
       </div>
     </nav>
-    <div id="container">
-      <svg id="canvas" xmlns="http://www.w3.org/2000/svg" version="1.1">
-      </svg>
+    <div id="main-container">
+      <div id="container">
+        <svg id="canvas" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        </svg>
+      </div>
+      <div id="metrics-panel">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Performance Metrics</h5>
+          </div>
+          <div class="card-body">
+            <div class="metric-item">
+              <span class="metric-label">Nodes Explored:</span>
+              <span class="metric-value" id="nodes-explored">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Nodes in Frontier:</span>
+              <span class="metric-value" id="frontier-size">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Path Length:</span>
+              <span class="metric-value" id="path-length">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Path Cost:</span>
+              <span class="metric-value" id="path-cost">0</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Execution Time:</span>
+              <span class="metric-value" id="execution-time">0ms</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

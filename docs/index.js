@@ -27,6 +27,15 @@
   let heuristic;
   // flag to determine if diagonal movement is allowed.
   let diagonalMovement = false;
+  // metrics tracking variables
+  let metricsEnabled = false;
+  let currentMetrics = {
+    nodesExplored: 0,
+    pathLength: 0,
+    executionTime: 0,
+    pathCost: 0,
+    frontierSize: 0
+  };
 
   window.onload = function() {
     userInteractionHandler = {};
@@ -117,7 +126,61 @@
     $("diagonal-movement-toggle").onchange = function() {
       diagonalMovement = this.checked;
     }
+    $("metrics-toggle-switch").onchange = function() {
+      metricsEnabled = this.checked;
+      const metricsPanel = $("metrics-panel");
+      if (metricsEnabled) {
+        metricsPanel.classList.add("show");
+      } else {
+        metricsPanel.classList.remove("show");
+      }
+    }
   };
+
+  /**
+   * Updates the metrics display with current values.
+   */
+  function updateMetricsDisplay() {
+    if (!metricsEnabled) return;
+
+    $("nodes-explored").innerText = currentMetrics.nodesExplored;
+    $("path-length").innerText = currentMetrics.pathLength;
+    $("execution-time").innerText = currentMetrics.executionTime + "ms";
+    $("path-cost").innerText = currentMetrics.pathCost;
+    $("frontier-size").innerText = currentMetrics.frontierSize;
+  }
+
+  /**
+   * Resets all metrics to zero.
+   */
+  function resetMetrics() {
+    currentMetrics = {
+      nodesExplored: 0,
+      pathLength: 0,
+      executionTime: 0,
+      pathCost: 0,
+      frontierSize: 0
+    };
+    updateMetricsDisplay();
+  }
+
+  /**
+   * Calculates path length and cost by traversing from end to start.
+   */
+  function calculatePathMetrics() {
+    let pathLength = 0;
+    let pathCost = 0;
+    let current = end;
+
+    while (current && current.parent) {
+      pathLength++;
+      pathCost += current.cost;
+      current = current.parent;
+    }
+
+    currentMetrics.pathLength = pathLength;
+    currentMetrics.pathCost = pathCost;
+  }
 
   /**
    * Generates a maze by randomly setting tiles to be walls.
@@ -146,6 +209,9 @@
    * @param animate boolean used to determine if search should be animated.
    */
   async function aStarSearch(animate = true) {
+    const startTime = performance.now();
+    resetMetrics();
+
     let pathFound = false;
     let priorityQueue = [];
 
@@ -155,6 +221,7 @@
     while(priorityQueue.length != 0 && !pathFound) {
       let tile = priorityQueue.shift();
       tile.isVisited = true;
+      currentMetrics.nodesExplored++;
 
       if (!isDestinationNode(tile)) {
         if (tile != start) {
@@ -182,17 +249,27 @@
           return (tileA.distance + heuristic(tileA)) -
                  (tileB.distance + heuristic(tileB));
         });
+
+        currentMetrics.frontierSize = priorityQueue.length;
       } else {
         pathFound = true;
       }
+
       if (animate) {
+        updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
     }
 
+    const endTime = performance.now();
+    currentMetrics.executionTime = Math.round(endTime - startTime);
+
     if (pathFound) {
+      calculatePathMetrics();
       drawPath(animate);
     }
+
+    updateMetricsDisplay();
   }
 
   /**
@@ -207,6 +284,9 @@
    * @param animate boolean used to determine if search should be animated.
    */
   async function dijkstrasAlgorithm(animate = true) {
+    const startTime = performance.now();
+    resetMetrics();
+
     let pathFound = false;
     let priorityQueue = [];
 
@@ -216,6 +296,7 @@
     while(priorityQueue.length != 0 && !pathFound) {
       let tile = priorityQueue.shift();
       tile.isVisited = true;
+      currentMetrics.nodesExplored++;
 
       if (!isDestinationNode(tile)) {
         if (tile != start) {
@@ -243,17 +324,27 @@
         priorityQueue.sort((tileA, tileB) => {
           return tileA.distance - tileB.distance;
         });
+
+        currentMetrics.frontierSize = priorityQueue.length;
       } else {
         pathFound = true;
       }
+
       if (animate) {
+        updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
     }
 
+    const endTime = performance.now();
+    currentMetrics.executionTime = Math.round(endTime - startTime);
+
     if (pathFound) {
+      calculatePathMetrics();
       drawPath(animate);
     }
+
+    updateMetricsDisplay();
   }
 
   /**
@@ -268,6 +359,9 @@
    * @param animate boolean used to determine if search should be animated.
    */
   async function breadthFirstSearch(animate = true) {
+    const startTime = performance.now();
+    resetMetrics();
+
     let pathFound = false;
     let queue = [];
     queue.push(start);
@@ -275,6 +369,7 @@
     while(queue.length != 0 && !pathFound) {
       let tile = queue.shift();
       tile.isVisited = true;
+      currentMetrics.nodesExplored++;
 
       if (!isDestinationNode(tile)) {
         if (tile != start) {
@@ -291,17 +386,27 @@
             }
           }
         }
+
+        currentMetrics.frontierSize = queue.length;
       } else {
         pathFound = true;
       }
+
       if (animate) {
+        updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
     }
 
+    const endTime = performance.now();
+    currentMetrics.executionTime = Math.round(endTime - startTime);
+
     if (pathFound) {
+      calculatePathMetrics();
       drawPath(animate);
     }
+
+    updateMetricsDisplay();
   }
 
   /**
@@ -316,6 +421,9 @@
    * @param animate boolean used to determine if search should be animated.
    */
   async function depthFirstSearch(animate = true) {
+    const startTime = performance.now();
+    resetMetrics();
+
     let pathFound = false;
     let stack = [];
     stack.push(start);
@@ -323,6 +431,7 @@
     while (stack.length != 0 && !pathFound) {
       let tile = stack.pop();
       tile.isVisited = true;
+      currentMetrics.nodesExplored++;
 
       if (!isDestinationNode(tile)) {
         if (tile != start) {
@@ -333,17 +442,27 @@
           move.parent = tile;
           stack.push(move);
         }
+
+        currentMetrics.frontierSize = stack.length;
       } else {
         pathFound = true;
       }
+
       if (animate) {
+        updateMetricsDisplay();
         await sleep(ANIMATION_SPEED);
       }
     }
 
+    const endTime = performance.now();
+    currentMetrics.executionTime = Math.round(endTime - startTime);
+
     if (pathFound) {
+      calculatePathMetrics();
       drawPath(animate);
     }
+
+    updateMetricsDisplay();
   }
 
   /**
@@ -462,6 +581,7 @@
       tile.distance = Infinity;
       tile.parent = null;
     }
+    resetMetrics();
   }
 
   /**
