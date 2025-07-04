@@ -6,8 +6,8 @@
 </div>
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/f359a347-d9d0-451b-9c70-d7dbe24d37b9" alt="A* Search">
-  <p><em>A* search with the Manhattan distance heuristic</em></p>
+  <img src="https://github.com/user-attachments/assets/29b39566-d432-48e9-8924-fcf120f0fd94" alt="bfs">
+  <p><em>Breadth First Search (BFS)</em></p>
 </div>
 
 <div align="center">
