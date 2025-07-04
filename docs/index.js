@@ -74,11 +74,13 @@
           pathfindingAlgorithm = depthFirstSearch;
           text += "DFS";
       }
-      $("visualize").innerText = text;
+      $("visualize").innerHTML = '<i class="fas fa-play mr-1"></i>' + text;
       if (disableHeuristicsDropdown) {
         $("heuristics-dropdown").classList.add("disabled");
+        $("heuristic-display").style.display = "none";
       } else {
         $("heuristics-dropdown").classList.remove("disabled");
+        // Don't show heuristic display until one is actually selected
       }
     };
     $("heuristics-menu").onclick = function(event) {
@@ -95,7 +97,9 @@
         case "Octile":
           heuristic = octileDistance;
       }
-      $("visualize").innerText = "Visualize A* - " + event.target.text;
+      $("visualize").innerHTML = '<i class="fas fa-play mr-1"></i>Visualize A*';
+      $("current-heuristic").innerText = event.target.text;
+      $("heuristic-display").style.display = "flex";
     };
     $("clear-path").onclick = function() {
       if (!this.classList.contains("disabled")) {
